@@ -6,7 +6,7 @@ this_directory = path.abspath(path.dirname(__file__))
 
 with open(path.join(this_directory, 'requirements.txt')) as fp:
     requirements = fp.read().split()
-with open(path.join(this_directory, 'README.md')) as fp:
+with open(path.join(this_directory, 'README.rst')) as fp:
     description = fp.read()
 setup(
   name = 'jugaad-trader',
