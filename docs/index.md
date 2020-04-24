@@ -1,6 +1,6 @@
 # Introduction
 
-Jugad trader is an unofficial client for Zerodha trading account. You can programatically log in to your Zerodha account using your credentials and automate some of your tasks.
+Jugad trader is an unofficial client for Zerodha and Upstox trading account. You can programatically log in to your Zerodha and Upstox account using your credentials and automate some of your tasks.
 
 PLEASE USE THIS LIBRARY AT YOUR OWN RISK, THERE ARE NO GURANTEES ASSOCIATED WITH THIS LIBRARY. PLEASE USE OFFICIAL API SUBSCRIPTION FOR ALL SERIOUS USAGE.
 
@@ -10,14 +10,33 @@ PLEASE USE THIS LIBRARY AT YOUR OWN RISK, THERE ARE NO GURANTEES ASSOCIATED WITH
 pip install jugad-trader
 ```
 
-## Getting Started
+## Getting Started with Upstox
 
 ```Python
-from jugaad_trader import ZerodhaAutomation
+from jugaad_trader import Upstox
 user_id = "USERID"
 password = "PASSWORD"
 twofa = "TWOFA"
-z = ZerodhaAutomation(user_id, password, twofa)
+u = Upstox(user_id, password, twofa)
+
+# Login
+u.login()
+
+# Get profile information
+profile = u.get_client_info()
+
+# More documentation to follow
+```
+
+
+## Getting Started with Zerodha
+
+```Python
+from jugaad_trader import Zerodha
+user_id = "USERID"
+password = "PASSWORD"
+twofa = "TWOFA"
+z = Zerodha(user_id, password, twofa)
 
 # Log into account
 status = z.login()

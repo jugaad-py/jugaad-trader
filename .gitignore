@@ -1,5 +1,8 @@
 .git/
 
+# VScode
+.vscode/
+
 # Firebase
 .firebase
 
