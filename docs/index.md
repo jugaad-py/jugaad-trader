@@ -4,6 +4,11 @@ Jugad trader is an unofficial client for Zerodha and Upstox trading account. You
 
 PLEASE USE THIS LIBRARY AT YOUR OWN RISK, THERE ARE NO GURANTEES ASSOCIATED WITH THIS LIBRARY. PLEASE USE OFFICIAL API SUBSCRIPTION FOR ALL SERIOUS USAGE.
 
+## Table of content
+1. [Installation](#installation)
+2. [Getting Started with Upstox](#getting-started-with-upstox)
+3. [Getting Started with Zerodha](#getting-started-with-zerodha)
+4. [Source Code](#source-code)
 ## Installation
 
 ```
