@@ -154,7 +154,7 @@ class Zerodha:
                     order_type,
                     product="CNC",
                     price=0,
-                    validity="Day",
+                    validity="DAY",
                     disclosed_quantity=0,
                     trigger_price=0,
                     squareoff=0,
