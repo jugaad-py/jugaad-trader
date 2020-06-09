@@ -12,7 +12,7 @@ PLEASE USE THIS LIBRARY AT YOUR OWN RISK, THERE ARE NO GURANTEES ASSOCIATED WITH
 ## Installation
 
 ```
-pip install jugad-trader
+pip install jugaad-trader
 ```
 
 ## Getting Started with Upstox
