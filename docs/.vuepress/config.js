@@ -1,6 +1,6 @@
 module.exports = {
 	  title: 'Jugaad Trader',
-	  description: 'Unofficial python client for Zerodha',
+	  description: 'Trading automation SKD',
 	  host: "0.0.0.0",
 	  port: "8000",
 	  head: [
