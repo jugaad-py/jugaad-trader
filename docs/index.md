@@ -78,6 +78,7 @@ order_resp = z.place_order(variety=z.VARIETY_REGULAR,
 print(order_resp)
 
 ```
+This class is mostly compatible with [official KiteConnect class](https://kite.trade/docs/pykiteconnect/v3/). There are some methods that are not supported thru browser (for example 'instruments'), I would request community to report which methods are working and which are not. 
 
 ## Contributing to Jugaad Trader
 
