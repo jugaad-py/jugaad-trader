@@ -91,7 +91,7 @@ class Zerodha:
         data = {"user_id": self.user_id, "request_id": j['data']["request_id"], "twofa_value": self.twofa }
         self.r = self.s.post(twofa_url, data=data)
         j = json.loads(self.r.text)
-        self.public_token = j['data']['public_token']
+        # self.public_token = j['data']['public_token']
         self.enc_token = self.r.cookies['enctoken']
         
         return j
