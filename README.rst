@@ -9,7 +9,7 @@ Unofficial Upstox & Zerodha Client library
 Documentation
 #############
 
-`<https://jugaad.marketsetup.in>`_
+`<https://marketsetup.in/documentation/jugaad-trader/>`_
 
 
 Contributing to Jugaad Trader
