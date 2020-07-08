@@ -6,10 +6,11 @@ import dateutil.parser
 import hashlib
 import logging
 import datetime
+import time
 
 import requests
 import json
-from kiteconnect import KiteConnect
+from kiteconnect import KiteConnect, KiteTicker
 import kiteconnect.exceptions as ex
 from bs4 import BeautifulSoup
 log = logging.getLogger(__name__)
@@ -155,11 +156,34 @@ class Zerodha(KiteConnect):
             return {exchange: chunkjs['instruments'][exchange]}
         else:
             return chunkjs['instruments']
-        
+   
+class ZerodhaTicker(KiteTicker):
+    ROOT_URI = "wss://ws.zerodha.com"
+    def __init__(self, api_key, access_token, public_token, user_id, debug=False, root=None,
+                reconnect=True, reconnect_max_tries=50, reconnect_max_delay=60,
+                connect_timeout=30):
+        super(KiteTicker, self).__init__(api_key, access_token, debug=False, root=None,
+                                reconnect=True, reconnect_max_tries=50, reconnect_max_delay=60,
+                                connect_timeout=30)
+        uid = int(time.time())*1000
+        self.socket_url = "{root}?api_key=kitefront"\
+                            "&public_token={public_token}&user_id={user_id}&uid={uid}&user-agent=kite3-web&version=2.4.0".format(
+                                                    root=self.root,
+                                                    api_key=api_key,
+                                                    public_token=public_token,
+                                                    user_id=user_id,
+                                                    uid=uid)
+
+         
+                            
 if __name__=="__main__":
     import os
     cwd = os.getcwd()
     print(cwd)
+
+    A   kwslogging.basicConfig(level=logging.DEBUG)
+ = ZerodhaTicker("lq8w3pqUze0QZrAdE1BPnFzOHIz2jiNV", "your_access_token")
+    """
     with open('./env/zerodha.json','r') as fp:
         creds = json.load(fp)
         user_id = creds['user_id']
@@ -171,6 +195,8 @@ if __name__=="__main__":
     status = z.login()
     print(status)
     i = z.instruments()
+    """
+
     # print(z.profile())
     
     # order_id = z.place_order(tradingsymbol="INFY", 
