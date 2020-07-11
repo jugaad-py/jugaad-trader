@@ -181,8 +181,6 @@ if __name__=="__main__":
     cwd = os.getcwd()
     print(cwd)
 
-    A   kwslogging.basicConfig(level=logging.DEBUG)
- = ZerodhaTicker("lq8w3pqUze0QZrAdE1BPnFzOHIz2jiNV", "your_access_token")
     """
     with open('./env/zerodha.json','r') as fp:
         creds = json.load(fp)
