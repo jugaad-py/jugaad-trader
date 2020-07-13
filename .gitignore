@@ -1,5 +1,7 @@
 .git/
 
+*.pkl
+
 # VScode
 .vscode/
 

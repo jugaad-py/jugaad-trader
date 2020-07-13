@@ -1,18 +1,26 @@
-from six import StringIO, PY2
-from six.moves.urllib.parse import urljoin
 import csv
 import json
-import dateutil.parser
 import hashlib
 import logging
 import datetime
 import time
+import operator
+import json
+import configparser
+import os
+import pickle
+
 
 import requests
-import json
+import click
+from six.moves.urllib.parse import urljoin
+
+
 from kiteconnect import KiteConnect, KiteTicker
 import kiteconnect.exceptions as ex
 from bs4 import BeautifulSoup
+from . import CLI_NAME
+
 log = logging.getLogger(__name__)
 
 
@@ -27,10 +35,24 @@ class Zerodha(KiteConnect):
         
     """
     _default_root_uri = "https://kite.zerodha.com"
-    def __init__(self, user_id, password, twofa):
-        self.user_id = user_id
-        self.password = password
-        self.twofa = twofa
+    def __init__(self, user_id=None, password=None, twofa=None):
+        if not (user_id or password or twofa):
+            config = configparser.ConfigParser()
+            try:
+                home_folder = os.path.expanduser('~')
+                config.read(os.path.join(home_folder, '.zcreds'))
+                creds = config['CREDENTIALS']
+                self.user_id = creds["user_id"]
+                self.password = creds["password"]
+                self.twofa = creds["twofa"]
+            except:
+                raise
+
+        else:
+            self.user_id = user_id
+            self.password = password
+            self.twofa = twofa
+        
         super().__init__(api_key="")
         self.s = self.reqsession = requests.Session()
         headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
@@ -41,17 +63,36 @@ class Zerodha(KiteConnect):
         self.chunkjs = {}
         # self._routes["user.profile"] = "/user/profile/full"
 
+    def load_creds(self, path=None):
+        if path==None:
+            path = os.path.join(click.get_app_dir(CLI_NAME), ".zsession")
+        with open(path, "rb") as fp:
+            self.reqsession = pickle.load(fp)
+
     def _user_agent(self):
         return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
     
-    def login(self):
+    def login_step1(self):
         self.r = self.reqsession.get(base_url)
         self.r = self.reqsession.post(login_url, data={"user_id": self.user_id, "password":self.password})
         j = json.loads(self.r.text)
+        return j
+
+    def login_step2(self, j):
         data = {"user_id": self.user_id, "request_id": j['data']["request_id"], "twofa_value": self.twofa }
         self.r = self.s.post(twofa_url, data=data)
         j = json.loads(self.r.text)
-        # self.public_token = j['data']['public_token']
+        return j
+
+
+    def login(self):
+        j = self.login_step1()
+        if j['status'] == 'error':
+            raise Exception(j['message'])
+        
+        j = self.login_step2(j)
+        if j['status'] == 'error':
+            raise Exception(j['message'])
         self.enc_token = self.r.cookies['enctoken']
         return j
 
@@ -156,6 +197,9 @@ class Zerodha(KiteConnect):
             return {exchange: chunkjs['instruments'][exchange]}
         else:
             return chunkjs['instruments']
+
+    def close(self):
+        self.reqsession.close()
    
 class ZerodhaTicker(KiteTicker):
     ROOT_URI = "wss://ws.zerodha.com"
@@ -181,21 +225,10 @@ if __name__=="__main__":
     cwd = os.getcwd()
     print(cwd)
 
-    """
-    with open('./env/zerodha.json','r') as fp:
-        creds = json.load(fp)
-        user_id = creds['user_id']
-        password = creds['password']
-        twofa = creds['twofa']
-        print(creds)
-    z = Zerodha(user_id, password, twofa)
-    # Log into account
-    status = z.login()
-    print(status)
-    i = z.instruments()
-    """
+    
 
-    # print(z.profile())
+    z = Zerodha()
+
     
     # order_id = z.place_order(tradingsymbol="INFY", 
     #                                 exchange=z.EXCHANGE_NSE, 
