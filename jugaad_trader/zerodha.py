@@ -19,7 +19,8 @@ from six.moves.urllib.parse import urljoin
 from kiteconnect import KiteConnect, KiteTicker
 import kiteconnect.exceptions as ex
 from bs4 import BeautifulSoup
-from . import CLI_NAME
+from .import CLI_NAME
+
 
 log = logging.getLogger(__name__)
 

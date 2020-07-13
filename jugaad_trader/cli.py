@@ -4,8 +4,6 @@ import pickle
 import click
 from .zcli import zerodha
 
-APP_NAME = 'jtrader'
-
 
 cli = click.Group(commands={"zerodha": zerodha})
 

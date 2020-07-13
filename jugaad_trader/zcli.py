@@ -2,8 +2,7 @@ import os
 import configparser
 import pickle
 import click
-from jugaad_trader import Zerodha
-from . import CLI_NAME
+from jugaad_trader import Zerodha, CLI_NAME
 
 app_dir = click.get_app_dir(CLI_NAME)
 if not os.path.exists(app_dir):
@@ -128,4 +127,4 @@ def zerodha(action):
 
 
 if __name__ == "__main__":
-    cli()
+    zerodha()
