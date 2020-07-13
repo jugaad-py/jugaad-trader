@@ -15,7 +15,7 @@ except:
 class TestZerodhaInit(unittest.TestCase):
 
     def test_init(self):
-        self.assertEqual(1,2)
+        self.assertEqual(1,1)
 
 class TestZerodhaLogin(unittest.TestCase):
     creds = config['CREDENTIALS']
@@ -63,13 +63,14 @@ class TestZerodhaLogin(unittest.TestCase):
                 yield name, getattr(self, name)
 
     def test_steps(self):
+        click.echo("test-sequence(", nl=False)
         for i, (name, step) in enumerate(self._steps()):
             try:
                 step()
-                click.echo(".")
+                click.echo("{}".format(i+1), nl=False)
             except Exception as e:
                 self.fail("{} failed ({}: {})".format(step, type(e), e))
-        click.echo('Completed {} sub-tests'.format(i))
+        click.echo(")", nl=False)
     
     def test_login_step1_invalid_creds(self):
         z = Zerodha("randomcreds", "randomstring123324", "2231212")

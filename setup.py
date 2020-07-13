@@ -1,12 +1,13 @@
 from distutils.core import setup
-from os import path
+import os
 
+os.environ["SETUP"] = "YES"
 import jugaad_trader
-this_directory = path.abspath(path.dirname(__file__))
+this_directory = os.path.abspath(os.path.dirname(__file__))
 
-with open(path.join(this_directory, 'requirements.txt')) as fp:
+with open(os.path.join(this_directory, 'requirements.txt')) as fp:
     requirements = fp.read().split()
-with open(path.join(this_directory, 'README.rst')) as fp:
+with open(os.path.join(this_directory, 'README.rst')) as fp:
     description = fp.read()
 setup(
   name = 'jugaad-trader',
@@ -16,7 +17,13 @@ setup(
   packages = ['jugaad_trader'],
   install_requires=requirements,
   description="A trade automation library",
-  url="https://jugaad-trader.web.app/",
+  url="https://marketsetup.in/documentation/jugaad-trader/",
   long_description_content_type='text/x-rst',
   long_description=description,
+  # other arguments here...
+  entry_points={
+        "console_scripts": [
+            "jtrader = jugaad_trader.cli:cli",
+        ]
+    }
 )
