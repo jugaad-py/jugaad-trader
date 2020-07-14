@@ -2,6 +2,10 @@
 *.swp
 *.pkl
 
+temp.py
+
+.venv/
+
 # VScode
 .vscode/
 

@@ -2,13 +2,16 @@ import os
 import configparser
 import pickle
 import click
-from jugaad_trader import Zerodha, CLI_NAME
+from jugaad_trader import Zerodha
+from jugaad_trader.util import CLI_NAME
+
 
 app_dir = click.get_app_dir(CLI_NAME)
 if not os.path.exists(app_dir):
     os.makedirs(app_dir)
 
-
+cred_file = '.zcred'
+session_file = '.zsession'
 
 @click.group()
 def zerodha():
@@ -41,13 +44,14 @@ def startsession():
     p = z.profile()
 
     click.echo(click.style("Logged in successfully as {}".format(p['user_name']), fg='green'))
-    with open(os.path.join(app_dir, ".zsession"), "wb") as fp:
+    with open(os.path.join(app_dir, session_file), "wb") as fp:
         pickle.dump(z.reqsession, fp)
+    click.echo("Saved session successfully")
 
 @zerodha.command()
 def savecreds():
     """Saves your creds in the APP config directory"""
-    click.echo("Saves your creds in app config folder in file named .zcreds")
+    click.echo("Saves your creds in app config folder in file named {}".format(cred_file))
     user_id = click.prompt("User ID >")
     password = click.prompt("Password >", hide_input=True)
     twofa = click.prompt("Pin >", hide_input=True)
@@ -55,7 +59,7 @@ def savecreds():
     config['CREDENTIALS'] = {'user_id': user_id,
                                 'password': password,
                                 'twofa': twofa}
-    with open(os.path.join(app_dir, '.zcreds'), "w") as fp:
+    with open(os.path.join(app_dir, cred_file), "w") as fp:
         config.write(fp)
         click.echo(click.style("Saved credentials successfully", fg='green'))
 
@@ -67,6 +71,35 @@ def configdir():
     click.echo(app_dir)
 
 
+@zerodha.command()
+@click.argument("config")
+def rm(config):
+    """Delete stored credentials or sessions config
+
+        To delete SESSION
+
+        $ jtrader zerodha rm SESSION
+
+        To delete CREDENTIALS
+
+        $ jtrader zerodha rm CREDENTIALS
+    """
+    if config == "CREDENTIALS":
+        try:
+            os.remove(os.path.join(app_dir, cred_file))
+        except FileNotFoundError:
+            click.echo("Could not find any credentials, you can save it again using 'jtrader zerodha savecreds'")
+        else:
+            click.echo("Successfully deleted credentials config, you can save it again using 'jtrader zerodha savecreds`")
+    
+    if config == "SESSION":
+        try:
+            os.remove(os.path.join(app_dir, session_file))
+        except FileNotFoundError:
+            click.echo("Could not find the session config, you can save it again using 'jtrader zerodha startsession'")
+        else:
+            click.echo("Successfully deleted, you can save it again using 'jtrader zerodha startsession'")
+    
 
 
 

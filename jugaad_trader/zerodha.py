@@ -19,7 +19,8 @@ from six.moves.urllib.parse import urljoin
 from kiteconnect import KiteConnect, KiteTicker
 import kiteconnect.exceptions as ex
 from bs4 import BeautifulSoup
-from .import CLI_NAME
+
+from jugaad_trader.util import CLI_NAME
 
 
 log = logging.getLogger(__name__)
@@ -37,23 +38,11 @@ class Zerodha(KiteConnect):
     """
     _default_root_uri = "https://kite.zerodha.com"
     def __init__(self, user_id=None, password=None, twofa=None):
-        if not (user_id or password or twofa):
-            config = configparser.ConfigParser()
-            try:
-                home_folder = os.path.expanduser('~')
-                config.read(os.path.join(home_folder, '.zcreds'))
-                creds = config['CREDENTIALS']
-                self.user_id = creds["user_id"]
-                self.password = creds["password"]
-                self.twofa = creds["twofa"]
-            except:
-                raise
-
-        else:
-            self.user_id = user_id
-            self.password = password
-            self.twofa = twofa
-        
+    
+        self.user_id = user_id
+        self.password = password
+        self.twofa = twofa
+    
         super().__init__(api_key="")
         self.s = self.reqsession = requests.Session()
         headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
@@ -64,11 +53,32 @@ class Zerodha(KiteConnect):
         self.chunkjs = {}
         # self._routes["user.profile"] = "/user/profile/full"
 
-    def load_creds(self, path=None):
+    def set_access_token(self):
+        self.load_session()
+
+    def load_session(self, path=None):
+        
         if path==None:
             path = os.path.join(click.get_app_dir(CLI_NAME), ".zsession")
-        with open(path, "rb") as fp:
-            self.reqsession = pickle.load(fp)
+        try:
+            with open(path, "rb") as fp:
+                self.reqsession = pickle.load(fp)
+        except FileNotFoundError:
+            raise FileNotFoundError("\n\nCould not find the session, Please start a session using \n\n$ jtrader zerodha startsession")
+        self.enc_token = self.reqsession.cookies['enctoken']
+
+    def load_creds(self, path=None):
+        if path==None:
+            path = os.path.join(click.get_app_dir(CLI_NAME), ".zcred")
+        config = configparser.ConfigParser()
+        try:
+            config.read(path)
+        except FileNotFoundError:
+            raise FileNotFoundError("\n\nCould not find the credentials, Please save the credentials using \n\n$ jtrader zerodha savecreds")
+        creds = config['CREDENTIALS']
+        self.user_id = creds['user_id']
+        self.password = creds['password']
+        self.twofa = creds['twofa']
 
     def _user_agent(self):
         return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
@@ -190,7 +200,7 @@ class Zerodha(KiteConnect):
     
     def instruments(self, exchange=None):
         if self.chunkjs:
-            chunckjs = self.chunkjs['instruments']
+            chunkjs = self.chunkjs['instruments']
         else:
             js = self.get_chunk_js()
             chunkjs = self.chunk_to_json(js)
@@ -207,7 +217,7 @@ class ZerodhaTicker(KiteTicker):
     def __init__(self, api_key, access_token, public_token, user_id, debug=False, root=None,
                 reconnect=True, reconnect_max_tries=50, reconnect_max_delay=60,
                 connect_timeout=30):
-        super(KiteTicker, self).__init__(api_key, access_token, debug=False, root=None,
+        super(ZerodhaTicker, self).__init__(api_key, access_token, debug=False, root=None,
                                 reconnect=True, reconnect_max_tries=50, reconnect_max_delay=60,
                                 connect_timeout=30)
         uid = int(time.time())*1000
@@ -222,23 +232,4 @@ class ZerodhaTicker(KiteTicker):
          
                             
 if __name__=="__main__":
-    import os
-    cwd = os.getcwd()
-    print(cwd)
-
-    
-
-    z = Zerodha()
-
-    
-    # order_id = z.place_order(tradingsymbol="INFY", 
-    #                                 exchange=z.EXCHANGE_NSE, 
-    #                                 transaction_type=z.TRANSACTION_TYPE_BUY, 
-    #                                 quantity=1, 
-    #                                 order_type=z.ORDER_TYPE_LIMIT,
-    #                                 price=670,
-    #                                 product=z.PRODUCT_CNC, variety=z.VARIETY_REGULAR)
-
-    
-
-    
+    pass

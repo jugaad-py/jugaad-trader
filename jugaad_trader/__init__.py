@@ -1,9 +1,6 @@
-import os
-# Moved to top to avoid circuilar imports (CLI_NAME will be required by zerodha.py and upstox.py for loading config)
-CLI_NAME = "jtrader"
 
-if not os.environ.get("SETUP"):
-    from .zerodha import Zerodha
-    from .upstox import Upstox
+from jugaad_trader import *
+from jugaad_trader.zerodha import Zerodha
+from jugaad_trader.upstox import Upstox
 
-__version__ = "0.2alpha"
+__version__ = "0.14"

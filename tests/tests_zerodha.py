@@ -36,12 +36,12 @@ class TestZerodhaLogin(unittest.TestCase):
 
     def seq3_login_step2_valid_creds(self):
         j = self.z.login_step2(self.step1_result)
-        self.assertEqual(self.step1_result['status'], 'success')
+        self.assertEqual(j['status'], 'success')
         self.assertIn('enctoken', self.z.r.cookies)
 
     def seq4_login_valid_creds(self):
         j = self.z.login()
-        self.assertEqual(self.step1_result['status'], 'success')
+        self.assertEqual(j['status'], 'success')
     
     def seq5_login_invalid_pass(self):
         self.z.password = "somerandompassword"
@@ -64,7 +64,7 @@ class TestZerodhaLogin(unittest.TestCase):
 
     def test_steps(self):
         click.echo("test-sequence(", nl=False)
-        for i, (name, step) in enumerate(self._steps()):
+        for i, (_, step) in enumerate(self._steps()):
             try:
                 step()
                 click.echo("{}".format(i+1), nl=False)
@@ -78,9 +78,6 @@ class TestZerodhaLogin(unittest.TestCase):
         self.assertEqual(step1_result['status'], 'error')
         z.close()
     
-    def test_init_without_creds(self):
-        z = Zerodha()
-        self.assertEqual(z.user_id, self.z.user_id)
     
     def tearDown(self):
         self.z.close()
