@@ -2,7 +2,6 @@
 Jugaad Trader
 *************
 
-
 Unofficial Upstox & Zerodha Client library
 
 
