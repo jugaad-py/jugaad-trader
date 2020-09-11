@@ -15,7 +15,7 @@ session_file = '.zsession'
 
 @click.group()
 def zerodha():
-    """ Command line utilities for managin Zerodha account
+    """ Command line utilities for managing Zerodha account
         Get started by creating a session
 
         $ jtrader zerodha startsession

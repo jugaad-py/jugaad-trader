@@ -8,14 +8,11 @@ from jugaad_trader import Zerodha
 config = configparser.ConfigParser()
 try:
     home_folder = os.path.expanduser('~')
-    config.read(os.path.join(home_folder, '.zcreds'))
+    config.read(os.path.join(home_folder, '.config', 'jtrader', '.zcred'))
+    config['CREDENTIALS']
 except:
     Exception("Credentials not found")
 
-class TestZerodhaInit(unittest.TestCase):
-
-    def test_init(self):
-        self.assertEqual(1,1)
 
 class TestZerodhaLogin(unittest.TestCase):
     creds = config['CREDENTIALS']
@@ -83,6 +80,6 @@ class TestZerodhaLogin(unittest.TestCase):
         self.z.close()
 
 if __name__=="__main__":
-
-
+    
     unittest.main()
+

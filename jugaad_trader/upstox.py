@@ -1,3 +1,4 @@
+
 import asyncio
 import pathlib
 import ssl
@@ -7,9 +8,10 @@ import uuid
 import websockets
 from requests import Session
 import certifi
-
+from bs4 import BeautifulSoup
 import json
 
+from jugaad_trader.util import CLI_NAME
 
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -17,35 +19,61 @@ localhost_pem = certifi.where()
 ssl_context.load_verify_locations(localhost_pem)
 
 class Upstox:
-    def __init__(self, client_id, password, twofa):
+    def __init__(self, client_id="", password="", twofa=""):
         self.client_id = client_id
         self.password = password
         self.twofa = twofa
         self.loop = asyncio.get_event_loop()
         self.event_tree = {}
-    
-    def notification_handler(self, packet):
-        print("Notification: " + packet)
-
-    async def connect(self):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
             "Host": "pro.upstox.com",
         }
-        s = Session()
-        s.headers.update(headers)
-        s.cookies.set("mode", "login")
-        url = "https://pro.upstox.com/"
-        r = s.get(url)
-        """Extract json"""
-        find_str1 = "angular.module('upstoxApp').service('AppDataServ', function(){ return"
-        x = r.text.find(find_str1) + len(find_str1)
-        y = x + r.text[x:].find("});angular.module('upstoxApp')")
-        j = r.text[x:y]
-        j = json.loads(j)
+        self.s = Session()
+        self.s.headers.update(headers)
+        self.keys = { 
+                    "apiId": "e6bb46d9d4b16dae8cf5173e047fa10ca1d79ec48d3e9fb747d4eabad8ba5313",
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJVUFNUT1hQUk9NQUlOIiwiYXVkIjoiVVBTVE9YUFJPTUFJTnxXRUIiLCJzdWIiOiJHZXQgU29ja2V0IENvbm5lY3Rpb24iLCJpYXQiOjE1OTc2NjM1Njg1NjUsImV4cCI6MTYwNzY2MzU2ODU2NX0.JUUdWtrfacqDiqUGQNEeeehCGid8HpiF08f3jrI-a8o"
+    }
 
+    def notification_handler(self, packet):
+        print("Notification: " + packet)
+    
+    def load_creds(self):
+        if path==None:
+            path = os.path.join(click.get_app_dir(CLI_NAME), ".ucred")
+        config = configparser.ConfigParser()
+        try:
+            config.read(path)
+        except FileNotFoundError:
+            raise FileNotFoundError("\n\nCould not find the credentials, Please save the credentials using \n\n$ jtrader upstox savecreds")
+        creds = config['CREDENTIALS']
+        self.user_id = creds['user_id']
+        self.password = creds['password']
+        self.twofa = creds['twofa']
+    
+    def get_root_js(self):
+        url = "https://pro.upstox.com" + self.get_js_name()
+        r = self.s.get(url)
+        return r.text
+
+    def get_api_key(self, js):
+        s = js.split("var s='")[1]
+        s = s.split("';")[0]
+        j = json.loads(s)
+        return j
+ 
+    def get_js_name(self):
+        url = "https://pro.upstox.com"
+        r = self.s.get(url)
+        bs = BeautifulSoup(r.text, features="html.parser")
+        script = bs.find('script')
+        return script['src']
+
+    async def connect(self):
+        j = self.keys 
         wss_url = "wss://ws.upstox.com/socket.io/?apiId={apiId}&token={token}&client_id={client_id}&ReleaseType=Green&deviceId=523739463&EIO=3&transport=websocket"
-        wss_url = wss_url.format(apiId=j['apiId'], token=j['token'], client_id=client_id)
+        wss_url = wss_url.format(apiId=j['apiId'], token=j['token'], client_id=self.client_id)
         self.url = wss_url
         headers = [("Host", "ws.upstox.com"), ("User-Agent", 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'),
                 ("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8"), ("Origin", "https://pro.upstox.com")]

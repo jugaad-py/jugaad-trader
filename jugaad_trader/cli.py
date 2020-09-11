@@ -3,9 +3,12 @@ import configparser
 import pickle
 import click
 from .zcli import zerodha
+from .ucli import upstox
 
-
-cli = click.Group(commands={"zerodha": zerodha})
+cli = click.Group(commands={
+                            "zerodha": zerodha,
+                            "upstox": upstox
+                            })
 
 
 
