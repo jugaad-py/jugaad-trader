@@ -6,17 +6,8 @@ import re
 import json
 import click
 from jugaad_trader import Upstox
-
-config = configparser.ConfigParser()
-try:
-    home_folder = os.path.expanduser('~')
-    config.read(os.path.join(home_folder, '.config', 'jtrader', '.ucred'))
-except:
-    Exception("Credentials not found")
-
-
-creds = config['CREDENTIALS']
-u =  Upstox(creds['user_id'], creds['password'], creds['twofa'])
+u = Upstox()
+u.load_creds()
 
 def test_js_name():
     js_name = u.get_js_name()

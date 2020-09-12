@@ -4,13 +4,14 @@ import pathlib
 import ssl
 import json
 import uuid
-
+import os 
 import websockets
 from requests import Session
 import certifi
 from bs4 import BeautifulSoup
 import json
-
+import configparser
+import click
 from jugaad_trader.util import CLI_NAME
 
 
@@ -39,7 +40,7 @@ class Upstox:
     def notification_handler(self, packet):
         print("Notification: " + packet)
     
-    def load_creds(self):
+    def load_creds(self, path=None):
         if path==None:
             path = os.path.join(click.get_app_dir(CLI_NAME), ".ucred")
         config = configparser.ConfigParser()
@@ -48,7 +49,7 @@ class Upstox:
         except FileNotFoundError:
             raise FileNotFoundError("\n\nCould not find the credentials, Please save the credentials using \n\n$ jtrader upstox savecreds")
         creds = config['CREDENTIALS']
-        self.user_id = creds['user_id']
+        self.client_id = creds['user_id']
         self.password = creds['password']
         self.twofa = creds['twofa']
     
@@ -61,6 +62,7 @@ class Upstox:
         s = js.split("var s='")[1]
         s = s.split("';")[0]
         j = json.loads(s)
+        
         return j
  
     def get_js_name(self):
@@ -145,18 +147,12 @@ class Upstox:
         return factory
 
 if __name__=="__main__":
-    with open("./env/upstox.json") as fp:
-        j = json.load(fp)
-    client_id = j['client_id']
-    password = j['password']
-    twofa = j['twofa']
 
-    u = Upstox(client_id, password, twofa)
-
+    u = Upstox()
+    u.load_creds()
     r = u.login()
-
-    msg = u.get_client_info()
     print(r)
+    msg = u.get_client_info()
     print(msg)
     print(u.get_order_history())
 
