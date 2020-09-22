@@ -29,6 +29,7 @@ log = logging.getLogger(__name__)
 base_url = "https://kite.zerodha.com"
 login_url = "https://kite.zerodha.com/api/login"
 twofa_url = "https://kite.zerodha.com/api/twofa"
+instruments_url = "https://api.kite.trade/instruments"
 class Zerodha(KiteConnect):
     """
         TO DO:
@@ -129,8 +130,6 @@ class Zerodha(KiteConnect):
         # Custom headers
         headers = self.oms_headers()
 
-
-
         if self.debug:
             log.debug("Request: {method} {url} {params} {headers}".format(method=method, url=url, params=params, headers=headers))
 
@@ -199,16 +198,12 @@ class Zerodha(KiteConnect):
         return self.chunkjs
     
     def instruments(self, exchange=None):
-        if self.chunkjs:
-            chunkjs = self.chunkjs['instruments']
-        else:
-            js = self.get_chunk_js()
-            chunkjs = self.chunk_to_json(js)
         if exchange:
-            return {exchange: chunkjs['instruments'][exchange]}
+            self.r = self.reqsession.get(instruments_url + "/{}".format(exchange))
         else:
-            return chunkjs['instruments']
-
+            self.r = self.reqsession.get(instruments_url)
+        return self._parse_instruments(self.r.text)
+        
     def close(self):
         self.reqsession.close()
    

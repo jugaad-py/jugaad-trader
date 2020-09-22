@@ -79,6 +79,13 @@ class TestZerodhaLogin(unittest.TestCase):
     def tearDown(self):
         self.z.close()
 
+def test_instrument():
+    z = Zerodha("randomcreds", "randomstring123324", "2231212")
+    instr = z.instruments()
+    assert len(instr) > 100
+    instr = z.instruments("NSE")
+    assert len(instr) > 100
+    
 if __name__=="__main__":
     
     unittest.main()
