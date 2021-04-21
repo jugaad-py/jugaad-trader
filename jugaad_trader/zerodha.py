@@ -213,7 +213,7 @@ class ZerodhaTicker(KiteTicker):
                                             root=None, reconnect=True,
                                             reconnect_max_tries=KiteTicker.RECONNECT_MAX_TRIES,
                                             reconnect_max_delay=KiteTicker.RECONNECT_MAX_DELAY,
-                                            connect_timeout=KiteTicker.CONNECT_TIMEOUT)
+                                            connect_timeout=KiteTicker.CONNECT_TIMEOUT):
         super(ZerodhaTicker, self).__init__(api_key="", access_token="",
                                             debug=debug, root=root,
                                             reconnect=reconnect,
