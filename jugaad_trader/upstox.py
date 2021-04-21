@@ -93,8 +93,8 @@ class Upstox:
     async def recv_forever(self):
         while(1):
             packet = await self.websocket.recv()
-            # if packet == '3':
-                # continue
+            if packet == '3':
+                continue
             if packet[0:2] == '42':
                 try:
                     msg = self.decode_packet(packet)
@@ -145,6 +145,9 @@ class Upstox:
             x = self.loop.run_until_complete(send_recv(**kwargs))
             return x
         return factory
+
+    def place_order(self, **kwargs):
+        pass
 
 if __name__=="__main__":
 
