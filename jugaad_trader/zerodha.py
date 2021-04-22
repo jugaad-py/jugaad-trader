@@ -40,13 +40,9 @@ class ZerodhaTicker(KiteTicker):
                                             connect_timeout=connect_timeout)
 
         uid = int(time.time())*1000
-        self.socket_url = "{root}?api_key=kitefront"\
-                          "&user_id={user_id}&enctoken={enc_token}&uid={uid}&user-agent=kite3-web&version=2.4.0".format(
-                              root=self.ROOT_URI,
-                              user_id=user_id,
-                              enc_token=enc_token,
-                              uid=uid)
- 
+        self.socket_url = "{root}?api_key=kitefront&user_id={user_id}&enctoken={enc_token}&uid={uid}&user-agent=kite3-web&version=2.4.0".format(root=self.ROOT_URI, user_id=user_id, enc_token=enc_token, uid=uid)
+
+
 base_url = "https://kite.zerodha.com"
 login_url = "https://kite.zerodha.com/api/login"
 twofa_url = "https://kite.zerodha.com/api/twofa"
@@ -88,6 +84,7 @@ class Zerodha(KiteConnect):
         except FileNotFoundError:
             raise FileNotFoundError("\n\nCould not find the session, Please start a session using \n\n$ jtrader zerodha startsession")
         self.enc_token = self.reqsession.cookies['enctoken']
+        self.user_id = self.reqsession.cookies['user_id']
 
     def load_creds(self, path=None):
         if path==None:
