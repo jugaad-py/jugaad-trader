@@ -1,5 +1,5 @@
 requests==2.23.0
-websockets==8.1
+websockets==9.1
 kiteconnect==3.8.2
 beautifulsoup4
 Click==7.1.2
