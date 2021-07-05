@@ -229,5 +229,24 @@ class Zerodha(KiteConnect):
     def ticker(self):
         return ZerodhaTicker(self.user_id, self.enc_token)
                             
+class Console(Zerodha):
+    """
+        Experimental support for Zerodha backoffice platform Coin
+    """
+    _default_root_uri = "https://coin.zerodha.com"
+    api_key = "console" # API key for Coin
+
+    _routes = {
+        "":""
+    }
+    def __init__(self, z):
+        """
+            args:
+                z - Instance of Zerodha class
+        """
+        self.session = z.session
+
+
+
 if __name__=="__main__":
     pass
