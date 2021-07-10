@@ -69,6 +69,7 @@ class Zerodha(KiteConnect):
                     }
         self.reqsession.headers.update(headers)
         self.chunkjs = {}
+        self.url_patch = '/oms'
         # self._routes["user.profile"] = "/user/profile/full"
 
     def set_access_token(self):
@@ -126,7 +127,7 @@ class Zerodha(KiteConnect):
         self.enc_token = self.r.cookies['enctoken']
         return j
 
-    def oms_headers(self):
+    def custom_headers(self):
         h = {}
         h['authorization'] = "enctoken {}".format(self.enc_token)
         h['referer'] = 'https://kite.zerodha.com/dashboard'
@@ -137,16 +138,22 @@ class Zerodha(KiteConnect):
         h['x-kite-userid'] = self.user_id
         return h
     
-    def _request(self, route, method, parameters=None):
-        """Make an HTTP request."""
-        params = parameters.copy() if parameters else {}
+    def _request(self, route, method, url_args=None, params=None,
+                 is_json=False, query_params=None):
+        if url_args:
+            uri = self._routes[route].format(**url_args)
+        else:
+            uri = self._routes[route] 
 
-        # Form a restful URL
-        uri = self._routes[route].format(**params)
-        url = urljoin(self.root, '/oms' + uri)
+        url = urljoin(self.root, self.url_patch + uri)
+        
+        # prepare url query params
+        if method in ["GET", "DELETE"]:
+            query_params = params
+
 
         # Custom headers
-        headers = self.oms_headers()
+        headers = self.custom_headers()
 
         if self.debug:
             log.debug("Request: {method} {url} {params} {headers}".format(method=method, url=url, params=params, headers=headers))
@@ -154,15 +161,15 @@ class Zerodha(KiteConnect):
         try:
             r = self.reqsession.request(method,
                                         url,
+                                        json=params if (method in ["POST", "PUT"] and is_json) else None,
                                         data=params if method in ["POST", "PUT"] else None,
-                                        params=params if method in ["GET", "DELETE"] else None,
+                                        params=query_params if method in ["GET", "DELETE"] else None,
                                         headers=headers,
                                         verify=not self.disable_ssl,
                                         allow_redirects=True,
                                         timeout=self.timeout,
                                         proxies=self.proxies)
             self.r = r
-        # Any requests lib related exceptions are raised here - http://docs.python-requests.org/en/master/_modules/requests/exceptions/
         except Exception as e:
             raise e
 
@@ -233,20 +240,89 @@ class Console(Zerodha):
     """
         Experimental support for Zerodha backoffice platform Coin
     """
-    _default_root_uri = "https://coin.zerodha.com"
+    _default_root_uri = "https://console.zerodha.com"
     api_key = "console" # API key for Coin
-
     _routes = {
-        "":""
+        "login":"/kite/login",
+        "status": "/api/user/status",
+        "user_profile": "/api/user_profile/status",
+        "dashboard": "/api/dashboard",
+        "account_values": "/api/dashboard/account_values",
+        "positions": "/api/reports/positions",
+        "portfolio": "/api/reports/holdings/portfolio",
+        "tradebook": "/api/reports/tradebook",
+        "pnl": "/api/reports/pnl",
+        "ledger": "/api/ledger",
+        "interest_statement": "/api/funds/interest_statement",
+        "mandate": "/api/mandate"
     }
     def __init__(self, z):
         """
             args:
                 z - Instance of Zerodha class
         """
-        self.session = z.session
+        
+        super().__init__(z.user_id, z.password, z.twofa)
+        self._root = self._default_root_uri
 
+        self.url_patch = ""
+        self.reqsession = z.reqsession
+        headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+                    }
+        self.reqsession.headers.update(headers)
+        self.console_session = "" 
+        self.public_token = "" 
+        self.register_functions() 
+    def custom_headers(self):
+        h = {}
+        h['referer'] = 'https://console.zerodha.com/'
+        h['x-kite-version'] = '2.4.0'
+        h['sec-fetch-site'] = 'same-origin'
+        h['sec-fetch-mode'] = 'cors'
+        h['sec-fetch-dest'] = 'empty'
+        h['user-agent'] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+        h['x-csrftoken'] = self.public_token
+        return h
+    
 
-
+    def login(self):
+        """
+            Get request to /login redirects to kite, if the Kite session is
+            already active, You are redirected back to Console and logged in
+            automatically            
+        """
+        url = self._root + self._routes["login"]
+        self.r = self.reqsession.get(url) 
+        if self.r.url == 'https://console.zerodha.com/dashboard':
+            cookies = self.reqsession.cookies.get_dict('console.zerodha.com')
+            self.console_session = cookies['session']
+            self.public_token = self.reqsession.cookies['public_token']
+            return True
+        else:
+            raise Exception("Login failed or Kite session expired")
+    
+    def factory_functions(self, route, docstring=""):
+        """
+            All APIs used by console end up sendinga a get request with some
+            data, hence creating a fatory function which will generate a
+            function to send GET requests
+        """
+        def generic_function(**kwargs):
+            return self._get(route, url_args=kwargs)
+        generic_function.__doc__ = docstring
+        return generic_function
+    
+    def register_functions(self):
+        self.dashboard = self.factory_functions("dashboard")
+        self.account_values = self.factory_functions("account_values")
+        self.positions = self.factory_functions("positions")
+        self.tradebook = self.factory_functions("tradebook")
+        self.pnl = self.factory_functions("pnl")
+        self.ledger = self.factory_functions("ledger")
+        self.interest_statement = self.factory_functions("interest_statement")
+        self.mandate = self.factory_functions("mandate")
+   
 if __name__=="__main__":
     pass

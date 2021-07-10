@@ -75,7 +75,11 @@ class TestZerodhaLogin(unittest.TestCase):
         self.assertEqual(step1_result['status'], 'error')
         z.close()
     
-    
+    def test_ltp(self):
+        self.z.login()
+        l = self.z.ltp(408065)
+        self.assertIn('408065', l)
+
     def tearDown(self):
         self.z.close()
 

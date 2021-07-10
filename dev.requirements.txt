@@ -1,3 +1,4 @@
 pytest
 pytest-asyncio
 twine
+pytest-watch
