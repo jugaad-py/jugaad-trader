@@ -53,6 +53,7 @@ Articles and examples using Jugaad-Trader
 
 
 `How to Log into your Zerodha account using Python`__
+---------------------------------------------------
 
 .. _article1: https://marketsetup.in/posts/zerodha-login/
 
