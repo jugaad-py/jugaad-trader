@@ -10,11 +10,6 @@ Documentation
 
 `<https://marketsetup.in/documentation/jugaad-trader/>`_
 
-::
-        Please explore another helpful library - _Jugaad-Trader
-
-.. _Jugaad-Trader: https://marketsetup.in/documentation/jugaad-data/
-
 
 Installation
 ############
@@ -48,9 +43,9 @@ Library provides a CLI to manage your session/credentials. It is not recommended
 
 For more details please visit `<https://marketsetup.in/documentation/jugaad-trader/>`_
 
+You may find this other jugaad (Jugaad-Data_) interesting, its a simple library to fetch data from NSE.
 
-
-
+.. _Jugaad-Data: https://marketsetup.in/documentation/jugaad-data/
 
 
 
