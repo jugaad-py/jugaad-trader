@@ -48,6 +48,14 @@ You may find this other jugaad (Jugaad-Data_) interesting, its a simple library 
 .. _Jugaad-Data: https://marketsetup.in/documentation/jugaad-data/
 
 
+Articles and examples using Jugaad-Trader
+*****************************************
 
 
+`How to Log into your Zerodha account using Python`__
 
+.. _article1: https://marketsetup.in/posts/zerodha-login/
+
+__ article1_
+
+A simple article which explains the basics on which this library is built
