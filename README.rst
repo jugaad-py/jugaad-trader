@@ -80,4 +80,3 @@ __ article3_
 
 Article shows how you can use Jugaad-Trader to place orders automatically
 
-
