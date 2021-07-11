@@ -2,14 +2,18 @@
 Jugaad Trader
 *************
 
-Unofficial Upstox & Zerodha Client library
-
+Alternate python library for Zerodha Kite connect API.
 
 Documentation
 #############
 
 
 `<https://marketsetup.in/documentation/jugaad-trader/>`_
+
+::
+        Please explore another helpful library - _Jugaad-Trader
+
+.. _Jugaad-Trader: https://marketsetup.in/documentation/jugaad-data/
 
 
 Installation

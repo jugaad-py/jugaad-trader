@@ -249,9 +249,13 @@ class Console(Zerodha):
         "dashboard": "/api/dashboard",
         "account_values": "/api/dashboard/account_values",
         "positions": "/api/reports/positions",
+        "exposure": "/api/reports/positions/exposure",
         "portfolio": "/api/reports/holdings/portfolio",
         "tradebook": "/api/reports/tradebook",
         "pnl": "/api/reports/pnl",
+        "pnl_summary": "/api/reports/pnl/summary",
+        "tax_pnl": "/api/reports/taxpnl",
+        "fund_balance": "https://console.zerodha.com/api/funds/balance",
         "ledger": "/api/ledger",
         "interest_statement": "/api/funds/interest_statement",
         "mandate": "/api/mandate"
@@ -310,7 +314,7 @@ class Console(Zerodha):
             function to send GET requests
         """
         def generic_function(**kwargs):
-            return self._get(route, url_args=kwargs)
+            return self._get(route, params=kwargs)
         generic_function.__doc__ = docstring
         return generic_function
     
@@ -318,8 +322,13 @@ class Console(Zerodha):
         self.dashboard = self.factory_functions("dashboard")
         self.account_values = self.factory_functions("account_values")
         self.positions = self.factory_functions("positions")
+        self.exposure = self.factory_functions("exposure")
+        self.portfolio = self.factory_functions("portfolio")
         self.tradebook = self.factory_functions("tradebook")
         self.pnl = self.factory_functions("pnl")
+        self.pnl_summary = self.factory_functions("pnl_summary")
+        self.tax_pnl = self.factory_functions("tax_pnl")
+        self.fund_balance = self.factory_functions("fund_balance")
         self.ledger = self.factory_functions("ledger")
         self.interest_statement = self.factory_functions("interest_statement")
         self.mandate = self.factory_functions("mandate")
