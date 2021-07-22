@@ -40,7 +40,7 @@ class ZerodhaTicker(KiteTicker):
                                             connect_timeout=connect_timeout)
 
         uid = int(time.time())*1000
-        self.socket_url = "{root}?api_key=kitefront&user_id={user_id}&enctoken={enc_token}&uid={uid}&user-agent=kite3-web&version=2.4.0".format(root=self.ROOT_URI, user_id=user_id, enc_token=enc_token, uid=uid)
+        self.socket_url = "{root}?api_key=kitefront&user_id={user_id}&enctoken={enc_token}&uid={uid}&user-agent=kite3-web&version=2.9.2".format(root=self.ROOT_URI, user_id=user_id, enc_token=enc_token, uid=uid)
 
 
 base_url = "https://kite.zerodha.com"
@@ -101,7 +101,7 @@ class Zerodha(KiteConnect):
         self.twofa = creds['twofa']
 
     def _user_agent(self):
-        return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+        return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"
     
     def login_step1(self):
         self.r = self.reqsession.get(base_url)
@@ -131,7 +131,7 @@ class Zerodha(KiteConnect):
         h = {}
         h['authorization'] = "enctoken {}".format(self.enc_token)
         h['referer'] = 'https://kite.zerodha.com/dashboard'
-        h['x-kite-version'] = '2.4.0'
+        h['x-kite-version'] = '2.9.2'
         h['sec-fetch-site'] = 'same-origin'
         h['sec-fetch-mode'] = 'cors'
         h['sec-fetch-dest'] = 'empty'
@@ -271,7 +271,7 @@ class Console(Zerodha):
 
         self.url_patch = ""
         self.reqsession = z.reqsession
-        headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
+        headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
                     }
@@ -282,11 +282,11 @@ class Console(Zerodha):
     def custom_headers(self):
         h = {}
         h['referer'] = 'https://console.zerodha.com/'
-        h['x-kite-version'] = '2.4.0'
+        h['x-kite-version'] = '2.9.2'
         h['sec-fetch-site'] = 'same-origin'
         h['sec-fetch-mode'] = 'cors'
         h['sec-fetch-dest'] = 'empty'
-        h['user-agent'] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+        h['user-agent'] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"
         h['x-csrftoken'] = self.public_token
         return h
     
