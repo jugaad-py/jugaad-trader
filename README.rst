@@ -47,6 +47,10 @@ You may find this other jugaad (Jugaad-Data_) interesting, its a simple library 
 
 .. _Jugaad-Data: https://marketsetup.in/documentation/jugaad-data/
 
+How to contribute
+*****************
+
+Refer this document how to contribute -  `<https://github.com/jugaad-py/jugaad-trader/blob/master/contributing.md>`_
 
 Articles and examples using Jugaad-Trader
 *****************************************

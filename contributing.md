@@ -38,7 +38,7 @@ Hopefully, all tests should pass.
 ## Make the changes
 
 * Make your changes to fix the bug or add a new functionality 
-* Write a test for it in `tests` folder at an appropriate place
+* Write a test for the new change in `tests` folder at an appropriate place
 * Run all the tests to make sure issue is fixed and it has not broken any other feature
 * Please do not include any personally identifiable information in your code (eg. your username, password, DP/ID etc), either in test or code
 
