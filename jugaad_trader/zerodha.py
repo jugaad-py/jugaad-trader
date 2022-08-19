@@ -16,7 +16,8 @@ import click
 from six.moves.urllib.parse import urljoin
 
 
-from kiteconnect import KiteConnect, KiteTicker
+from kiteconnect import KiteConnect
+from kiteticker import ZerodhaKiteTicker
 import kiteconnect.exceptions as ex
 from bs4 import BeautifulSoup
 
@@ -221,7 +222,7 @@ class Zerodha(KiteConnect):
             self.user_id = self.user_id
         if self.user_id is None:
             raise Exception("\nCould not find the session, Please start a session using \n\n$ jtrader zerodha startsession")
-        return KiteTicker(api_key=api_key, access_token=self.enc_token+'&user_id='+self.user_id, root='wss://ws.zerodha.com')
+        return ZerodhaKiteTicker(api_key=api_key, access_token=urllib.parse.quote_plus(self.enc_token)+'&user_id='+self.user_id, root='wss://ws.zerodha.com')
                             
 class Console(Zerodha):
     """
