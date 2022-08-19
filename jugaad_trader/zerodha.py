@@ -17,7 +17,7 @@ from six.moves.urllib.parse import urljoin
 
 
 from kiteconnect import KiteConnect
-from kiteticker import ZerodhaKiteTicker
+from .kiteticker import ZerodhaKiteTicker
 import kiteconnect.exceptions as ex
 from bs4 import BeautifulSoup
 
