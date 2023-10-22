@@ -4,6 +4,7 @@ import os
 import configparser
 
 import pytest
+import pyotp
 from jugaad_trader import Zerodha, Console
 
 config = configparser.ConfigParser()
@@ -15,9 +16,10 @@ except:
     Exception("Credentials not found")
 
 creds = config['CREDENTIALS']
+otp_gen = pyotp.TOTP(creds['twofa'])
 z = Zerodha(creds['user_id'],
             creds['password'],
-            creds['twofa'])
+            otp_gen.now())
 
 c = Console(z)
 def test_console_login():
@@ -25,6 +27,7 @@ def test_console_login():
     with pytest.raises(Exception):
         c.login()
     # Should login normally
+    z.twofa = otp_gen.now()
     z.login()
     assert c.login()
 
