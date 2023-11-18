@@ -1,4 +1,4 @@
-## Free Zerodha API
+## Free Zerodha API - jugaad-trader
 
 Jugaad trader implements reverse engineered API for Zerodha in python (hence the name Jugaad). With this library you can programatically execute trades, retrieve your order and trade books, holdings, margins among other things.
 
