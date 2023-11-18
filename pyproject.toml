@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jugaad-trader"
+version = "0.19"
+requires-python = ">= 3.6"
+authors = [{"name"= "jugaad-coder", "email"="abc@xyz.com"}]
+description = "Free Zerodha API python library"
+readme = "README.rst"
+license = {file = "LICENSE.YOLO.md"}
+keywords = ["Zerodha", "kiteconnect", "pykiteconnect"]
+dynamic = ["dependencies"]
+
+
+[project.scripts]
+jtrader = "jugaad_trader.cli:cli"
+
+[project.urls]
+Homepage = "https://marketsetup.in/documentation/jugaad-trader/"
+Documentation = "https://marketsetup.in/documentation/jugaad-trader/"
+Repository = "https://github.com/jugaad-py/jugaad-trader"
+Issues = "https://github.com/jugaad-py/jugaad-trader/issues"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
