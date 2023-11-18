@@ -3,7 +3,7 @@ name: Build
 on: push
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Dump GitHub context
