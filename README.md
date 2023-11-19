@@ -4,6 +4,7 @@ Jugaad trader implements reverse engineered API for Zerodha in python (hence the
 
 Documentation - https://marketsetup.in/documentation/jugaad-trader/
 
+
 ## Installation
 
 ```
