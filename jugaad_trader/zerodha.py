@@ -221,7 +221,12 @@ class Zerodha(KiteConnect):
             self.user_id = self.user_id
         if self.user_id is None:
             raise Exception("\nCould not find the session, Please start a session using \n\n$ jtrader zerodha startsession")
-        return KiteTicker(api_key=api_key, access_token=self.enc_token+'&user_id='+self.user_id, root='wss://ws.zerodha.com')
+        
+        enc_token = self.enc_token
+        enc_token = enc_token.replace("+", "%2B")
+        enc_token = enc_token.replace("/", "%2F")
+        enc_token = enc_token.replace("=", "%3D")
+        return KiteTicker(api_key=api_key, access_token=enc_token+'&user_id='+self.user_id, root='wss://ws.zerodha.com')
                             
 class Console(Zerodha):
     """
