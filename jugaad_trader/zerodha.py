@@ -29,6 +29,23 @@ base_url = "https://kite.zerodha.com"
 login_url = "https://kite.zerodha.com/api/login"
 twofa_url = "https://kite.zerodha.com/api/twofa"
 instruments_url = "https://api.kite.trade/instruments"
+
+# Hack to add routes to mutual portfolio and full portfolio
+# This is available on front end but not in backend
+KiteConnect._routes["portfolio.holdings.mf"] = "/portfolio/holdings/mf"
+KiteConnect._routes["portfolio.holdings.all"] = "/portfolio/holdings/all"
+
+def holdings_mf(self):
+    """Retrieve the list of equity holdings."""
+    return self._get("portfolio.holdings.mf")
+
+def holdings_all(self):
+    """Retrieve the list of equity holdings."""
+    return self._get("portfolio.holdings.all")
+
+KiteConnect.holdings_mf = holdings_mf
+KiteConnect.holdings_all = holdings_all
+
 class Zerodha(KiteConnect):
     """
         TO DO:
