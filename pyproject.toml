@@ -9,9 +9,18 @@ requires-python = ">= 3.6"
 authors = [{"name"= "jugaad-coder", "email"="abc@xyz.com"}]
 description = "Free Zerodha API python library"
 readme = "README.md"
-license = {file = "LICENSE.YOLO.md"}
+license-files = ["LICENSE.YOLO.md"]
 keywords = ["Zerodha", "kiteconnect", "pykiteconnect"]
-dynamic = ["dependencies"]
+dependencies = [
+    "requests",
+    "websockets",
+    "kiteconnect",
+    "beautifulsoup4",
+    "Click",
+    "six",
+    "pyotp",
+    "loguru"
+]
 
 
 [project.scripts]
@@ -22,6 +31,3 @@ Homepage = "https://marketsetup.in/documentation/jugaad-trader/"
 Documentation = "https://marketsetup.in/documentation/jugaad-trader/"
 Repository = "https://github.com/jugaad-py/jugaad-trader"
 Issues = "https://github.com/jugaad-py/jugaad-trader/issues"
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
